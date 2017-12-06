@@ -1,0 +1,14 @@
+{
+    "log": {
+        "level": "info"
+    },
+    "server": {
+        "port": 8085
+    },
+    "auth": {
+        "secret": "cheneyweb",
+        "pass": [
+            "/auth"
+        ]
+    }
+}
