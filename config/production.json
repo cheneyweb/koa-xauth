@@ -1,6 +1,6 @@
 {
     "log": {
-        "level": "info"
+        "level": "warn"
     },
     "server": {
         "port": 8085
@@ -9,6 +9,7 @@
         "secret": "cheneyweb",
         "pass": [
             "/auth"
-        ]
+        ],
+        "tokenname": "token"
     }
 }

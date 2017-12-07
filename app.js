@@ -17,7 +17,7 @@ const app = new Koa()
 app.use(bodyParser())
 
 // 对路由进行认证初始化
-xauth.init(router, config.auth)
+xauth.init(router, config.auth, (v) => v)
 
 // ===== 开始：用户认证中间件例子，‘/auth’已经配置白名单，‘/test’路由受保护 =====
 // 1、模拟用户登录，生成加密TOKEN令牌
