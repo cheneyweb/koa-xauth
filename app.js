@@ -16,6 +16,7 @@ const router = new Router()
 const app = new Koa()
 app.use(koaBody())
 app.use(xauth(config.auth, (v) => v))   // 参数1：认证配置，参数2：TOKEN提取规则
+app.use(router.routes())
 
 // ===== 开始：用户认证中间件例子，‘/auth’已经配置白名单，‘/test’路由受保护 =====
 // 1、模拟用户登录，生成加密TOKEN令牌
@@ -42,7 +43,6 @@ router.get('/auth', async function (ctx, next) {
 router.get('/test', async function (ctx, next) {
     ctx.body = ctx.tokenVerify // 获取TOKEN解析结果
 })
-app.use(router.routes())
 // ===== 结束：用户认证中间件例子，‘/auth’已经配置白名单，‘/test’路由受保护 =====
 
 // 启动应用服务
