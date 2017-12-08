@@ -7,9 +7,9 @@
     },
     "auth": {
         "secret": "cheneyweb",
+        "tokenname": "token",
         "pass": [
             "/auth"
-        ],
-        "tokenname": "token"
+        ]
     }
 }

@@ -3,7 +3,7 @@ const config = require('config')
 const port = config.server.port
 // 应用服务相关
 const Koa = require('koa')
-const bodyParser = require('koa-bodyparser')
+const koaBody = require('koa-body')
 const jwt = require('jsonwebtoken')
 const xauth = require(__dirname + '/xauth_modules/koa-xauth/index.js')
 // 日志相关
@@ -14,10 +14,8 @@ const router = new Router()
 
 // 初始化应用服务
 const app = new Koa()
-app.use(bodyParser())
-
-// 对路由进行认证初始化
-xauth.init(router, config.auth, (v) => v)
+app.use(koaBody())
+app.use(xauth(config.auth, (v) => v))   // 参数1：认证配置，参数2：TOKEN提取规则
 
 // ===== 开始：用户认证中间件例子，‘/auth’已经配置白名单，‘/test’路由受保护 =====
 // 1、模拟用户登录，生成加密TOKEN令牌
