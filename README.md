@@ -17,7 +17,7 @@ Node后端微服务框架，基于koa-xauth中间件，TOKEN令牌式身份认�
 
 快速上手
 >
-    1、const xauth = require('xauth')
+    1、const xauth = require('koa-xauth')
     2、app.use(xauth())
 
 帮助联系
