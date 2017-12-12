@@ -23,7 +23,7 @@ app.use(router.routes())
 router.use('/auth', async function (ctx, next) {
     try {
         if (true) { // 判断用户名密码等认证方式，这里默认通过
-            const tokenSign = await jwt.sign({ userId: '123', iat: Date.now() }, config.auth.secret)
+            const tokenSign = await jwt.sign({ userId: '123', role: 'admin', iat: Date.now() }, config.auth.secret)
             ctx.tokenSign = tokenSign // 向后面的路由传递TOKEN加密令牌
             next()
         } else {
@@ -42,6 +42,17 @@ router.get('/auth', async function (ctx, next) {
 // 3、下次其余路由需要在请求时在header中加上token参数，如果没有token或者token错误，xauth中间件会提示错误
 router.get('/test', async function (ctx, next) {
     ctx.body = ctx.tokenVerify // 获取TOKEN解析结果
+})
+
+// 路由角色控制
+router.get('/financial/test1', async function (ctx, next) {
+    ctx.body = ctx.tokenVerify
+})
+router.post('/financial/test1', async function (ctx, next) {
+    ctx.body = ctx.tokenVerify
+})
+router.get('/financial/test2', async function (ctx, next) {
+    ctx.body = ctx.tokenVerify
 })
 // ===== 结束：用户认证中间件例子，‘/auth’已经配置白名单，‘/test’路由受保护 =====
 
