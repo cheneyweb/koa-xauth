@@ -23,7 +23,9 @@ app.use(router.routes())
 router.use('/auth', async function (ctx, next) {
     try {
         if (true) { // 判断用户名密码等认证方式，这里默认通过
-            const tokenSign = await jwt.sign({ userId: '123', role: 'admin', iat: Date.now() }, config.auth.secret)
+            const tokenSign = await jwt.sign({  // exp设置过期时间，这里是24小时
+                userId: '123', role: 'admin', iat: Math.floor(Date.now() / 1000), exp: Math.floor(Date.now() / 1000) + (60 * 60 * 24),
+            }, config.auth.secret)
             ctx.tokenSign = tokenSign // 向后面的路由传递TOKEN加密令牌
             next()
         } else {
