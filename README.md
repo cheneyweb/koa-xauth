@@ -26,7 +26,7 @@ Node后端微服务框架，基于koa-xauth中间件，TOKEN令牌式身份认�
 配置说明
 >
     在/config/default.json中，有如下配置
-`
+```
 "auth": {
         "secret": "cheneyweb",  #必须，TOKEN密钥
         "tokenname": "token",   #可选，header中请求的TOKEN键名，默认为"token"
@@ -38,7 +38,7 @@ Node后端微服务框架，基于koa-xauth中间件，TOKEN令牌式身份认�
             "financialStaff":["GET:/financial/test1","POST:/financial/test2"]
         }
     }
-`
+```
 
 帮助联系
 >
