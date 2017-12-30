@@ -1,7 +1,7 @@
 # koa-xauth
 Node后端微服务框架，基于koa-xauth中间件，TOKEN令牌式身份认证集成
 
-[传送门：XServer官网文档](http://xserver.top)
+[传送门：XServer官网文档](http://www.xserver.top)
 
 框架目录结构
 >
