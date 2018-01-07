@@ -7,6 +7,10 @@ module.exports = function (authConfig = {}, tokenRule) {
         authConfig.pass = authConfig.pass || []
         authConfig.errMsg = authConfig.errMsg || '未认证'
         try {
+            // 跨域请求，通过
+            if(ctx.method == 'OPTIONS'){
+                return next()
+            }
             let token = ctx.header[authConfig.tokenname] || ctx.header.token
             if (tokenRule) {
                 token = tokenRule(token)
