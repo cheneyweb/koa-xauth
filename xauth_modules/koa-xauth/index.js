@@ -6,25 +6,26 @@ module.exports = function (authConfig = {}, tokenRule) {
         authConfig.tokenname = authConfig.tokenname || 'token'
         authConfig.pass = authConfig.pass || []
         authConfig.errMsg = authConfig.errMsg || '未认证'
-        try {
-            // 跨域请求，通过
-            if(ctx.method == 'OPTIONS'){
-                return next()
-            }
-            let token = ctx.header[authConfig.tokenname] || ctx.header.token
-            if (tokenRule) {
-                token = tokenRule(token)
-            }
-            // 白名单内，直接返回
-            if (authConfig.pass && authConfig.pass instanceof Array && authConfig.pass.length > 0) {
-                for (let p of authConfig.pass) {
-                    const rep = new RegExp(p)
-                    if (rep.test(ctx.url)) {
-                        return next()
-                    }
+        // 是否不处理跨域请求
+        if (authConfig.pass.cors && ctx.method == 'OPTIONS') {
+            return next()
+        }
+        // 从请求中获取TOKEN令牌
+        let token = ctx.header[authConfig.tokenname] || ctx.header.token
+        if (tokenRule) {
+            token = tokenRule(token)
+        }
+        // 白名单内，直接返回
+        if (authConfig.pass && authConfig.pass instanceof Array && authConfig.pass.length > 0) {
+            for (let p of authConfig.pass) {
+                const rep = new RegExp(p)
+                if (rep.test(ctx.url)) {
+                    return next()
                 }
             }
-            // 非白名单，进行校验
+        }
+        // 非白名单，进行校验
+        try {
             const tokenVerify = jwt.verify(token, authConfig.secret)
             if (tokenVerify) {
                 // 未配置角色控制，跳过
@@ -65,11 +66,11 @@ module.exports = function (authConfig = {}, tokenRule) {
                 ctx.status = 401
                 ctx.body = { err: true, res: authConfig.errMsg }
             }
-
         } catch (error) {
-            log.error(error)
             ctx.status = 401
+            error.err = true
             ctx.body = error
+            log.error(error)
         }
     }
 }

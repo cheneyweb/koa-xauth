@@ -9,6 +9,7 @@
         "secret": "cheneyweb",
         "tokenname": "token",
         "pass": ["/auth"],
+        "cors": true,
         "role":{
             "admin":[".*"],
             "financialAdmin":["/financial/*"],
