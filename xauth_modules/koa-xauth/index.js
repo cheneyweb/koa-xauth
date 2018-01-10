@@ -10,11 +10,6 @@ module.exports = function (authConfig = {}, tokenRule) {
         if (authConfig.pass.cors && ctx.method == 'OPTIONS') {
             return next()
         }
-        // 从请求中获取TOKEN令牌
-        let token = ctx.header[authConfig.tokenname] || ctx.header.token
-        if (tokenRule) {
-            token = tokenRule(token)
-        }
         // 白名单内，直接返回
         if (authConfig.pass && authConfig.pass instanceof Array && authConfig.pass.length > 0) {
             for (let p of authConfig.pass) {
@@ -23,6 +18,11 @@ module.exports = function (authConfig = {}, tokenRule) {
                     return next()
                 }
             }
+        }
+        // 从请求中获取TOKEN令牌
+        let token = ctx.header[authConfig.tokenname] || ctx.header.token
+        if (tokenRule) {
+            token = tokenRule(token)
         }
         // 非白名单，进行校验
         try {
