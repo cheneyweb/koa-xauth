@@ -3,18 +3,20 @@
         "level": "warn"
     },
     "server": {
-        "port": 8085
+        "port": 3636
     },
     "auth": {
         "secret": "cheneyweb",
         "tokenname": "token",
         "pass": ["/auth"],
-        "cors": true,
         "role":{
             "admin":[".*"],
             "financialAdmin":["/financial/*"],
             "financialManager":["/financial/test1","/financial/test2"],
             "financialStaff":["GET:/financial/test1","POST:/financial/test2"]
-        }
+        },
+        "cors": true,
+        "errMsg": "未认证",
+        "errStatus": 401
     }
 }

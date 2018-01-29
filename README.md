@@ -30,14 +30,16 @@ Node后端微服务框架，基于koa-xauth中间件，TOKEN令牌式身份认�
 "auth": {
         "secret": "cheneyweb",  #必须，TOKEN密钥
         "tokenname": "token",   #可选，header中请求的TOKEN键名，默认为"token"
-        "pass": ["/auth"],      #可选，白名单路由数组，正则匹配
-        "cors": true,           #可选，是否直接放行OPTIONS跨域检测
-        "role":{                #可选，角色拥有路由权限数组，正则匹配（启用该功能需要在token中增加role属性）
+        "pass": ["/auth"],      #可选，白名单路由数组，正则匹配，默认为空
+        "role":{                #可选，角色拥有路由权限数组，正则匹配（启用该功能需要在token中增加role属性），默认不开启
             "admin":[".*"],     
             "financialAdmin":["/financial/*"],
             "financialManager":["/financial/test1","/financial/test2"],
             "financialStaff":["GET:/financial/test1","POST:/financial/test2"]
-        }
+        },
+        "cors": true,           #可选，是否直接放行OPTIONS跨域检测，默认false
+        "errMsg": "未认证",      #可选，错误提示信息，默认“未认证”
+        "errStatus": 401        #可选，认证失败返回HTTP状态码，默认401
     }
 ```
 
@@ -54,3 +56,4 @@ Node后端微服务框架，基于koa-xauth中间件，TOKEN令牌式身份认�
     2017.12.12:增加角色路由权限控制
     2018.01.07:放行OPTIONS跨域请求
     2018.01.10:可配置OPTIONS跨域请求，优化白名单性能
+    2018.01.29:更新依赖，丰富配置项

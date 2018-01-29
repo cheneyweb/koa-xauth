@@ -1,15 +1,15 @@
 {
   "name": "koa-xauth",
-  "version": "0.8.0",
+  "version": "0.9.0",
   "description": "Koa路由中间件，实现TOKEN令牌式身份认证集成",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "dependencies": {
-    "jsonwebtoken": "^8.1.0",
-    "tracer": "^0.8.11"
-  },
   "author": "cheneyxu",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "jsonwebtoken": "^8.1.1",
+    "tracer": "^0.8.11"
+  }
 }

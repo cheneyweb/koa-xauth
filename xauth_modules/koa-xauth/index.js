@@ -6,7 +6,8 @@ module.exports = function (authConfig = {}, tokenRule) {
         authConfig.tokenname = authConfig.tokenname || 'token'
         authConfig.pass = authConfig.pass || []
         authConfig.errMsg = authConfig.errMsg || '未认证'
-        // 是否不处理跨域请求
+        authConfig.errStatus = authConfig.errStatus || 401
+        // 是否放行跨域OPTIONS请求
         if (authConfig.pass.cors && ctx.method == 'OPTIONS') {
             return next()
         }
@@ -52,24 +53,23 @@ module.exports = function (authConfig = {}, tokenRule) {
                         }
                     }
                     // 失败：所有路由规则循环完毕均不能匹配
-                    ctx.status = 401
+                    ctx.status = authConfig.errStatus
                     ctx.body = { err: true, res: `角色：[${tokenVerify.role}]未拥有访问权限` }
                 }
                 // 失败：角色拥有路由规则为空
                 else {
-                    ctx.status = 401
+                    ctx.status = authConfig.errStatus
                     ctx.body = { err: true, res: `角色：[${tokenVerify.role}]未配置访问权限` }
                 }
             }
             // 失败：TOKEN解析失败
             else {
-                ctx.status = 401
+                ctx.status = authConfig.errStatus
                 ctx.body = { err: true, res: authConfig.errMsg }
             }
         } catch (error) {
-            ctx.status = 401
-            error.err = true
-            ctx.body = error
+            ctx.status = authConfig.errStatus
+            ctx.body = { err: true, ...error }
             log.error(error)
         }
     }
