@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken')
 const log = require('tracer').colorConsole()
 
-module.exports = function (authConfig = {}, tokenRule) {
+module.exports = function (authConfig = {}, tokenRule, errorProcess) {
     return function xauth(ctx, next) {
         authConfig.tokenname = authConfig.tokenname || 'token'
         authConfig.pass = authConfig.pass || []
@@ -55,22 +55,38 @@ module.exports = function (authConfig = {}, tokenRule) {
                     // 失败：所有路由规则循环完毕均不能匹配
                     ctx.status = authConfig.errStatus
                     ctx.body = { err: true, res: `角色：[${tokenVerify.role}]未拥有访问权限` }
+                    // 额外可选错误处理
+                    if (errorProcess && typeof (errorProcess) == 'function') {
+                        errorProcess(ctx)
+                    }
                 }
                 // 失败：角色拥有路由规则为空
                 else {
                     ctx.status = authConfig.errStatus
                     ctx.body = { err: true, res: `角色：[${tokenVerify.role}]未配置访问权限` }
+                    // 额外可选错误处理
+                    if (errorProcess && typeof (errorProcess) == 'function') {
+                        errorProcess(ctx)
+                    }
                 }
             }
             // 失败：TOKEN解析失败
             else {
                 ctx.status = authConfig.errStatus
                 ctx.body = { err: true, res: authConfig.errMsg }
+                // 额外可选错误处理
+                if (errorProcess && typeof (errorProcess) == 'function') {
+                    errorProcess(ctx)
+                }
             }
         } catch (error) {
             ctx.status = authConfig.errStatus
             ctx.body = { err: true, ...error }
             log.error(error)
+            // 额外可选错误处理
+            if (errorProcess && typeof (errorProcess) == 'function') {
+                errorProcess(ctx)
+            }
         }
     }
 }

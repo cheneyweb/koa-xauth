@@ -9,11 +9,11 @@
   "author": "cheneyxu",
   "license": "ISC",
   "dependencies": {
-    "config": "^1.29.2",
-    "jsonwebtoken": "^8.1.1",
-    "koa": "^2.4.1",
+    "config": "^1.30.0",
+    "jsonwebtoken": "^8.2.0",
+    "koa": "^2.5.0",
     "koa-body": "^2.5.0",
-    "koa-router": "^7.3.0",
-    "tracer": "^0.8.11"
+    "koa-router": "^7.4.0",
+    "tracer": "^0.8.12"
   }
 }
