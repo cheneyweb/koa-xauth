@@ -16,7 +16,7 @@ const router = new Router()
 const app = new Koa()
 app.use(koaBody())
 app.use(xauth(config.auth, (v) => v, (ctx) => {    // 参数1：认证配置，参数2：TOKEN提取规则，参数3：自定义错误处理
-    if (ctx.body.name == 'JsonWebTokenError') {
+    if (ctx.body.name == 'TokenExpiredError') {
         ctx.body.code = -1
         ctx.body.msg = '自定义错误信息，TOKEN已过期'
     }
@@ -30,7 +30,7 @@ router.use('/auth', async function (ctx, next) {
         if (true) { // 判断用户名密码等认证方式，这里默认通过
             const user = { userId: '123', role: 'admin' }
             const tokenSign = await jwt.sign({  // exp设置过期时间，这里是24小时
-                ...user, iat: Math.floor(Date.now() / 1000), exp: Math.floor(Date.now() / 1000) + (10),
+                ...user, iat: Math.floor(Date.now() / 1000), exp: Math.floor(Date.now() / 1000) + (24 * 60 * 60),
             }, config.auth.secret)
             ctx.tokenSign = tokenSign // 向后面的路由传递TOKEN加密令牌
             next()
