@@ -1,12 +1,16 @@
 const jwt = require('jsonwebtoken')
 const log = require('tracer').colorConsole()
 
+global.tokenMap = {}
+
 module.exports = function (authConfig = {}, tokenRule, errorProcess) {
     return function xauth(ctx, next) {
         authConfig.tokenname = authConfig.tokenname || 'token'
         authConfig.pass = authConfig.pass || []
         authConfig.errMsg = authConfig.errMsg || '未认证'
         authConfig.errStatus = authConfig.errStatus || 401
+        authConfig.errMutexMsg = authConfig.errMutexMsg || '身份已过期，请重新登录'
+
         // 是否放行跨域OPTIONS请求
         if (authConfig.pass.cors && ctx.method == 'OPTIONS') {
             return next()
@@ -29,6 +33,18 @@ module.exports = function (authConfig = {}, tokenRule, errorProcess) {
         try {
             const tokenVerify = jwt.verify(token, authConfig.secret)
             if (tokenVerify) {
+                // 判断是否单点登录
+                if (authConfig.mutex) {
+                    let tokenKey = `${tokenVerify.role}${tokenVerify.id}`
+                    // 内存中没有这个TOKEN，则直接赋值
+                    if (!global.tokenMap[tokenKey] || global.tokenMap[tokenKey].iat < tokenVerify.iat) {
+                        global.tokenMap[tokenKey] = tokenVerify
+                    }
+                    // 检查传入TOKEN和内存中的TOKEN是否一致
+                    if (global.tokenMap[tokenKey].iat > tokenVerify.iat) {
+                        return ctx.body = { err: 401, res: authConfig.errMutexMsg }
+                    }
+                }
                 // 未配置角色控制，跳过
                 if (!authConfig.role) {
                     ctx.tokenVerify = tokenVerify
