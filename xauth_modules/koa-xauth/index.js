@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken')
 const log = require('tracer').colorConsole()
 
-global.tokenMap = {}
+global._tokenMap = {}
 
 module.exports = function (authConfig = {}, tokenRule, errorProcess) {
     return function xauth(ctx, next) {
@@ -37,11 +37,11 @@ module.exports = function (authConfig = {}, tokenRule, errorProcess) {
                 if (authConfig.mutex) {
                     let tokenKey = `${tokenVerify.role}${tokenVerify.id}`
                     // 内存中没有这个TOKEN，则直接赋值
-                    if (!global.tokenMap[tokenKey] || global.tokenMap[tokenKey].iat < tokenVerify.iat) {
-                        global.tokenMap[tokenKey] = tokenVerify
+                    if (!_tokenMap[tokenKey] || _tokenMap[tokenKey].iat < tokenVerify.iat) {
+                        _tokenMap[tokenKey] = tokenVerify
                     }
                     // 检查传入TOKEN和内存中的TOKEN是否一致
-                    if (global.tokenMap[tokenKey].iat > tokenVerify.iat) {
+                    if (_tokenMap[tokenKey].iat > tokenVerify.iat) {
                         return ctx.body = { err: 401, res: authConfig.errMutexMsg }
                     }
                 }
@@ -55,11 +55,12 @@ module.exports = function (authConfig = {}, tokenRule, errorProcess) {
                 if (roleRegArr && roleRegArr instanceof Array && roleRegArr.length > 0) {
                     for (let item of roleRegArr) {
                         // 首先判断请求method是否匹配
-                        if (item.indexOf(':') != '-1') {
-                            if (item.split(':')[0] != ctx.method) {
+                        if (item.indexOf(':') > 0) {
+                            let itemArr = item.split(':')
+                            if (itemArr[0] != ctx.method) {
                                 continue
                             }
-                            item = item.split(':')[1]
+                            item = itemArr[1]
                         }
                         // 其次判断请求url是否匹配
                         const re = new RegExp(item)
@@ -70,7 +71,7 @@ module.exports = function (authConfig = {}, tokenRule, errorProcess) {
                     }
                     // 失败：所有路由规则循环完毕均不能匹配
                     ctx.status = authConfig.errStatus
-                    ctx.body = { err: true, res: `角色：[${tokenVerify.role}]未拥有访问权限` }
+                    ctx.body = { err: true, res: `角色[${tokenVerify.role}]未拥有访问权限` }
                     // 额外可选错误处理
                     if (errorProcess && typeof (errorProcess) == 'function') {
                         errorProcess(ctx)
@@ -79,7 +80,7 @@ module.exports = function (authConfig = {}, tokenRule, errorProcess) {
                 // 失败：角色拥有路由规则为空
                 else {
                     ctx.status = authConfig.errStatus
-                    ctx.body = { err: true, res: `角色：[${tokenVerify.role}]未配置访问权限` }
+                    ctx.body = { err: true, res: `角色[${tokenVerify.role}]未配置访问权限` }
                     // 额外可选错误处理
                     if (errorProcess && typeof (errorProcess) == 'function') {
                         errorProcess(ctx)
