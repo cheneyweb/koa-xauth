@@ -10,6 +10,6 @@
   "license": "ISC",
   "dependencies": {
     "jsonwebtoken": "^8.5.1",
-    "tracer": "^1.1.2"
+    "tracer": "^1.1.3"
   }
 }

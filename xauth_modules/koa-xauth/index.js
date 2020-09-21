@@ -42,7 +42,8 @@ module.exports = function (authConfig = {}, tokenRule, errorProcess) {
                     }
                     // 检查传入TOKEN和内存中的TOKEN是否一致
                     if (_tokenMap[tokenKey].iat > tokenVerify.iat) {
-                        return ctx.body = { err: 401, res: authConfig.errMutexMsg }
+                        ctx.status = authConfig.errStatus
+                        return ctx.body = { err: true, res: authConfig.errMutexMsg }
                     }
                 }
                 // 未配置角色控制，跳过
