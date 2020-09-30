@@ -15,12 +15,14 @@ module.exports = function (authConfig = {}, tokenRule, errorProcess) {
         if (authConfig.pass.cors && ctx.method == 'OPTIONS') {
             return next()
         }
-        // 白名单内，直接返回
+        // 白名单内，进行标记
+        let isPass = false
         if (authConfig.pass && authConfig.pass instanceof Array && authConfig.pass.length > 0) {
             for (let p of authConfig.pass) {
                 const rep = new RegExp(p)
                 if (rep.test(ctx.url)) {
-                    return next()
+                    isPass = true
+                    break
                 }
             }
         }
@@ -29,7 +31,11 @@ module.exports = function (authConfig = {}, tokenRule, errorProcess) {
         if (tokenRule) {
             token = tokenRule(token)
         }
-        // 非白名单，进行校验
+        // 白名单，且无token，直接通过返回
+        if (isPass && !token) {
+            return next()
+        }
+        // 进行校验
         try {
             const tokenVerify = jwt.verify(token, authConfig.secret)
             if (tokenVerify) {
@@ -98,6 +104,10 @@ module.exports = function (authConfig = {}, tokenRule, errorProcess) {
                 }
             }
         } catch (error) {
+            // 白名单接口忽略错误
+            if (isPass) {
+                return next()
+            }
             ctx.status = authConfig.errStatus
             ctx.body = { err: true, ...error }
             log.error(error)
