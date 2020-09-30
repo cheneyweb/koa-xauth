@@ -38,6 +38,10 @@ module.exports = function (authConfig = {}, tokenRule, errorProcess) {
         // 进行校验
         try {
             const tokenVerify = jwt.verify(token, authConfig.secret)
+            if (isPass) {
+                ctx.tokenVerify = tokenVerify
+                return next()
+            }
             if (tokenVerify) {
                 // 判断是否单点登录
                 if (authConfig.mutex) {
