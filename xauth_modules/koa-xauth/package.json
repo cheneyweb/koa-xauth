@@ -1,6 +1,6 @@
 {
   "name": "koa-xauth",
-  "version": "1.4.5",
+  "version": "1.4.6",
   "description": "Koa路由中间件，实现TOKEN令牌式身份认证集成",
   "main": "index.js",
   "scripts": {
