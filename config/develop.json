@@ -17,6 +17,7 @@
         },
         "mutex": true,
         "cors": true,
+        "mutexCasUrls":["localhost:3636"],
         "errMsg": "未认证",
         "errStatus": 401
     }

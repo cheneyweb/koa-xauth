@@ -53,7 +53,7 @@ module.exports = function (authConfig = {}, tokenRule, errorProcess) {
                     // 检查传入TOKEN和内存中的TOKEN是否一致
                     if (_tokenMap[tokenKey].iat > tokenVerify.iat) {
                         ctx.status = authConfig.errStatus
-                        return ctx.body = { err: true, res: authConfig.errMutexMsg }
+                        throw { res: authConfig.errMutexMsg }
                     }
                 }
                 // 未配置角色控制，跳过
@@ -81,31 +81,16 @@ module.exports = function (authConfig = {}, tokenRule, errorProcess) {
                         }
                     }
                     // 失败：所有路由规则循环完毕均不能匹配
-                    ctx.status = authConfig.errStatus
-                    ctx.body = { err: true, res: `角色[${tokenVerify.role}]未拥有访问权限` }
-                    // 额外可选错误处理
-                    if (errorProcess && typeof (errorProcess) == 'function') {
-                        errorProcess(ctx)
-                    }
+                    throw { res: `角色[${tokenVerify.role}]未拥有访问权限` }
                 }
                 // 失败：角色拥有路由规则为空
                 else {
-                    ctx.status = authConfig.errStatus
-                    ctx.body = { err: true, res: `角色[${tokenVerify.role}]未配置访问权限` }
-                    // 额外可选错误处理
-                    if (errorProcess && typeof (errorProcess) == 'function') {
-                        errorProcess(ctx)
-                    }
+                    throw { res: `角色[${tokenVerify.role}]未配置访问权限` }
                 }
             }
             // 失败：TOKEN解析失败
             else {
-                ctx.status = authConfig.errStatus
-                ctx.body = { err: true, res: authConfig.errMsg }
-                // 额外可选错误处理
-                if (errorProcess && typeof (errorProcess) == 'function') {
-                    errorProcess(ctx)
-                }
+                throw { res: authConfig.errMsg }
             }
         } catch (error) {
             // 白名单接口忽略错误
