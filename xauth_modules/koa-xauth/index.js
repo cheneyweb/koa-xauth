@@ -12,7 +12,7 @@ module.exports = function (authConfig = {}, tokenRule, errorProcess) {
         authConfig.errMutexMsg = authConfig.errMutexMsg || '身份已过期，请重新登录'
 
         // 是否放行跨域OPTIONS请求
-        if (authConfig.pass.cors && ctx.method == 'OPTIONS') {
+        if (authConfig.cors && ctx.method == 'OPTIONS') {
             return next()
         }
         // 白名单内，进行标记
