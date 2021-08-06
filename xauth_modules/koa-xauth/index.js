@@ -1,6 +1,6 @@
 /* eslint-disable no-throw-literal */
 const jwt = require('jsonwebtoken')
-const log = require('tracer').colorConsole()
+const log = require('tracer').console()
 
 global._tokenMap = {}
 
